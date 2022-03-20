@@ -44,6 +44,10 @@ Imageの確認（下記コマンドで、emotionflower:ver4がいること）
 ```bash
 docker images
 ```
+
+/home/pi/smartlife以下に下記をcloneしておく。（コンテナでマウントしているので、コンテナ内で見える様になる）  
+https://github.com/y-kunii/face_classification
+
 コンテナ作成
 ```bash
 docker run -it -d -e DISPLAY=${DISPLAY} -v /tmp/.X11-unix:/tmp/.X11-unix -v $HOME/.Xauthority:/root/.Xauthority -v/home/pi/smartlife:/home/emotion --device=/dev/video0:/dev/video0 --device=/dev/mem:/dev/mem --net=host  emotionflower:ver7 bash
