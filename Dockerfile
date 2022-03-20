@@ -57,6 +57,7 @@ RUN pip3 install pyserial==3.5
 RUN pip3 install requests
 
 #Tensorflow lite
-pip3 install https://github.com/google-coral/pycoral/releases/download/release-frogfish/tflite_runtime-2.5.0-cp35-cp35m-linux_armv7l.whl
+RUN pip3 install https://github.com/google-coral/pycoral/releases/download/release-frogfish/tflite_runtime-2.5.0-cp35-cp35m-linux_armv7l.whl
 
 ENV PYTHONIOENCODING="utf-8"
+
