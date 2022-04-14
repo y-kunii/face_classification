@@ -67,7 +67,7 @@ sudo chmod a+rw /dev/video0
 ```
 
 ## 困ったときは
-* shhがうまくつながらない  
+* sshがうまくつながらない  
 /etc/ssh/sshd_configのPort番号を確認し、ホスト側でlsof -iでPortが利用されていないことを確認する。  
 使用されていたら、該当プロセスをkillするか、Port番号を変更してsshをrestartする。
 * GUIがでない。その１。  
