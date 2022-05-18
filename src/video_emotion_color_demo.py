@@ -101,8 +101,8 @@ reset_emotion_sum()                                     # 感情和リストを�
 time_before = time.time()                               # ループ直前の時刻を保存（デバッグ用）
 
 # flower_neopixel と通信するための名前付きパイプ
-#fifopath = os.path.join('/home/pi/smartlife', 'emotionflowerfifo')
-# os.mkfifo(fifopath, 0666)
+fifopath = os.path.join('/home/pi/smartlife', 'emotionflowerfifo')
+# os.mkfifo(fifopath, 0o666)
 
 # starting video streaming
 cv2.namedWindow('window_frame')
@@ -185,11 +185,11 @@ while True:
         print("time span: ", (time_now - time_before))   # 前回からの経過時間
         time_before = time_now
 
-        # add_emotion_rate(emotion_prediction)        # 感情の確率を加算する
-        # if (sum_count >= ANALYZE_COUNT):            # 感情検出回数が一定数たまったら LED に出力する
-        #     print_emotion_sum()                     # debug
-        #     #output_leds(emotion_sum, fifopath)
-        #     reset_emotion_sum()
+        add_emotion_rate(emotion_prediction)        # 感情の確率を加算する
+        if (sum_count >= ANALYZE_COUNT):            # 感情検出回数が一定数たまったら LED に出力する
+            print_emotion_sum()                     # debug
+            output_leds(emotion_sum, fifopath)
+            reset_emotion_sum()
         #     # ADD kuni
         #     url = "https://script.google.com/macros/s/AKfycbwplNBc3ILI7VaPeYWTKmOZuW8pihMEgEvIGIMsQuVwXLs-5a93qzy8YfWvlXd1U3E_yw/exec"
         #     tdatetime = dt.now()
@@ -216,8 +216,9 @@ while True:
     #time.sleep(500/1000)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
+        print("END")
         end_message = [99.99] * EMOTION_NUM # 終了時に flower_neopixel.py に送るデータ
-        #output_leds(end_message, fifopath)
+        output_leds(end_message, fifopath)
         break
 video_capture.release()
 cv2.destroyAllWindows()
