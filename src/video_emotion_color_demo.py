@@ -103,7 +103,6 @@ reset_emotion_sum()                                     # 感情和リストを�
 time_before = time.time()                               # ループ直前の時刻を保存（デバッグ用）
 
 heart = HeartBeat()                                     # ハートビートのインスタンスを生成
-heart.init()
 
 # flower_neopixel と通信するための名前付きパイプ
 fifopath = os.path.join('/home/pi/smartlife', 'emotionflowerfifo')
@@ -112,6 +111,7 @@ fifopath = os.path.join('/home/pi/smartlife', 'emotionflowerfifo')
 # starting video streaming
 cv2.namedWindow('window_frame')
 video_capture = cv2.VideoCapture(0)
+heart.init()                                            # ハートビート初期化
 while True:
     bgr_image = video_capture.read()[1]
     gray_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2GRAY)
