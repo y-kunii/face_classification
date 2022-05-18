@@ -24,6 +24,8 @@ import requests
 import time
 from datetime import datetime as dt
 
+from heartbeat import HeartBeat         # ハートビート用
+
 # parameters for loading data and images
 detection_model_path = '../trained_models/detection_models/haarcascade_frontalface_default.xml'
 emotion_model_path = '../trained_models/emotion_models/fer2013_mini_XCEPTION.102-0.66.hdf5'
@@ -100,6 +102,9 @@ emotion_window = []
 reset_emotion_sum()                                     # 感情和リストをリセット
 time_before = time.time()                               # ループ直前の時刻を保存（デバッグ用）
 
+heart = HeartBeat()                                     # ハートビートのインスタンスを生成
+heart.init()
+
 # flower_neopixel と通信するための名前付きパイプ
 fifopath = os.path.join('/home/pi/smartlife', 'emotionflowerfifo')
 # os.mkfifo(fifopath, 0o666)
@@ -111,6 +116,8 @@ while True:
     bgr_image = video_capture.read()[1]
     gray_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2GRAY)
     rgb_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2RGB)
+    heart.beat()                                        # カメラ画像の読み取りができればハートビートを打つ
+
     faces = detect_faces(face_detection, gray_image)
 
     for face_coordinates in faces:
