@@ -8,14 +8,7 @@ import numpy as np
 import threading
 #from threading import Semaphore, Thread
 from neopixel import *
-
-
-LED_NUM = 12                        # LED の数
-LED_PIN = 18                        # NeoPixel に接続する GPIO pin （PWMをサポートしていること）
-LED_FREQ_HZ = 800000                # LED 信号の周波数（Hz）
-LED_DMA = 5                         # LED に 送信する信号を生成する DMA チャネル
-LED_BRIGHTNESS = 255                # LED の明るさ（0 ～ 255） 個別に変更するので、この定数は使わない
-LED_INVERT = False                  # NPN トランジスタレベルシフトを使う場合、信号を反転させるため True にする。
+import happymirror_const
 
 # Define functions which animate LEDs in various ways.
 def colorWipe(strip, color, wait_ms=0):
