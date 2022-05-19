@@ -24,8 +24,7 @@ import requests
 import time
 from datetime import datetime as dt
 
-from heartbeat import HeartBeat         # ハートビート用
-from facedetect import FaceDetect       # 顔検出用
+from notifier import Notifier         # ハートビート、顔検出通知用
 
 # parameters for loading data and images
 detection_model_path = '../trained_models/detection_models/haarcascade_frontalface_default.xml'
@@ -103,8 +102,8 @@ emotion_window = []
 reset_emotion_sum()                                     # 感情和リストをリセット
 time_before = time.time()                               # ループ直前の時刻を保存（デバッグ用）
 
-heart = HeartBeat()                                     # ハートビートのインスタンスを生成
-facedet = FaceDetect()                                  # 顔検出通知用インスタンスを生成
+heartbeat = Notifier(1.0)                               # ハートビートのインスタンスを生成
+facedetect = Notifier(2.0)                              # 顔検出通知用インスタンスを生成
 
 # flower_neopixel と通信するための名前付きパイプ
 fifopath = os.path.join('/home/pi/smartlife', 'emotionflowerfifo')
@@ -113,17 +112,17 @@ fifopath = os.path.join('/home/pi/smartlife', 'emotionflowerfifo')
 # starting video streaming
 cv2.namedWindow('window_frame')
 video_capture = cv2.VideoCapture(0)
-heart.init()                                            # ハートビート初期化
-facedet.init()                                          # 顔検出通知を初期化
+heartbeat.init()                                        # ハートビート初期化
+facedetect.init()                                       # 顔検出通知を初期化
 while True:
     bgr_image = video_capture.read()[1]
     gray_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2GRAY)
     rgb_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2RGB)
-    heart.beat()                                        # カメラ画像の読み取りができればハートビートを打つ
+    heartbeat.notice()                                  # カメラ画像の読み取りができればハートビートを打つ
 
     faces = detect_faces(face_detection, gray_image)
     if len(faces) != 0:
-        facedet.detect()                                # 顔を検出したら通知する。
+        facedetect.notice()                             # 顔を検出したら通知する。
 
     for face_coordinates in faces:
 
