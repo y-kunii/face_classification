@@ -8,7 +8,7 @@ import numpy as np
 import threading
 #from threading import Semaphore, Thread
 from neopixel import *
-import happymirror_const
+from happymirror_const import *
 
 # Define functions which animate LEDs in various ways.
 def colorWipe(strip, color, wait_ms=0):
@@ -42,19 +42,6 @@ def show(strip, leds):
     strip.show()
 
 
-# emotion_prediction の順に並べた色情報
-EMOTION_COLOR = (
-    # G    R    B
-    (  0,  63,   0),    #  0: angry
-    (  0,  63,  63),    #  1: disgust
-    ( 63,   0,   0),    #  2: fear
-    ( 63,  63,   0),    #  3: happy
-    (  0,   0,  63),    #  4: sad
-    ( 63,   0,  63),    #  5: surprise
-    ( 15,  15,  15),    #  6: normal
-    (  0,   0,   0),    #  OFF
-)
-EMOTION_COLOR_LEDOFF = 7    # LED を OFF にするときの EMOTION_COLOR リストの要素番号
 
 # NeoPixel 12 Ring に合わせて、各感情に 2 個ずつ LED を割り当て、プルチックの感情の輪と同じ並びにする。
 # ただし、プルチックからの警戒と敬愛は削除。

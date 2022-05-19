@@ -25,6 +25,7 @@ import time
 from datetime import datetime as dt
 
 from notifier import Notifier         # ハートビート、顔検出通知用
+from happymirror_const import *
 
 # parameters for loading data and images
 detection_model_path = '../trained_models/detection_models/haarcascade_frontalface_default.xml'
@@ -102,8 +103,8 @@ emotion_window = []
 reset_emotion_sum()                                     # 感情和リストをリセット
 time_before = time.time()                               # ループ直前の時刻を保存（デバッグ用）
 
-heartbeat = Notifier(1.0)                               # ハートビートのインスタンスを生成
-facedetect = Notifier(2.0)                              # 顔検出通知用インスタンスを生成
+heartbeat = Notifier(HEARTBEAT_HOLD_TIME)               # ハートビートのインスタンスを生成
+facedetect = Notifier(FACEDETECT_HOLD_TIME)             # 顔検出通知用インスタンスを生成
 
 # flower_neopixel と通信するための名前付きパイプ
 fifopath = os.path.join('/home/pi/smartlife', 'emotionflowerfifo')
