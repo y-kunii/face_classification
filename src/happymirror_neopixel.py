@@ -124,7 +124,7 @@ class HappyMirrorLed:
 
         return leds
 
-    def show_led(self, heart_beat : Notifier, face_detect : Notifier, emotion : Notifier):
+    def depict(self, heart_beat : Notifier, face_detect : Notifier, emotion : Notifier):
         """
         引数で与えられた各インスタンスから情報を取得して LED を光らせます。
         @param heart_beat ハートビート用インスタンス

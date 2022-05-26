@@ -22,6 +22,12 @@ class Emotion:
         self.__emotions = [0.0] * EMOTION_NUM
         self.__queue_emotions = [[0.0] * EMOTION_NUM]
 
+    def reset_sum(self):
+        """
+        感情値の合計のみリセットします。
+        """
+        self.__emotions = [0.0] * EMOTION_NUM
+
     def accumurate(self, new_emotion):
         """
         新しい感情値を蓄積します。
@@ -33,7 +39,7 @@ class Emotion:
             self.__emotions[index] += value
 
         # 感情データが指定回数たまっていたら、一番古いデータを破棄します。
-        if len(self.__queue_emotions) > EMOTION_ACCUM_COUNT:
+        if len(self.__queue_emotions) > self.__accum_count:
             del self.__queue_emotions[0]
         self.__queue_emotions.append(new_emotion)
 
