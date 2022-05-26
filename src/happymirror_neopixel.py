@@ -1,12 +1,12 @@
 # coding: UTF-8
-
-import os
+#######################################################
+#
+# happymirror_neopixel.py
+#
+# HappyMirror 用 NeoPixel LED 制御クラス
+#
+#######################################################
 import time
-import pickle
-import base64
-import numpy as np
-import threading
-#from threading import Semaphore, Thread
 from neopixel import *
 from happymirror_const import *
 from emotion import Emotion
