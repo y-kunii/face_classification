@@ -22,6 +22,12 @@ class Emotion:
         self.__emotions = [0.0] * EMOTION_NUM
         self.__queue_emotions = [[0.0] * EMOTION_NUM]
 
+    def reset_sum(self):
+        """
+        感情値の合計のみリセットします。
+        """
+        self.__emotions = [0.0] * EMOTION_NUM
+
     def accumurate(self, new_emotion):
         """
         新しい感情値を蓄積します。
@@ -33,7 +39,7 @@ class Emotion:
             self.__emotions[index] += value
 
         # 感情データが指定回数たまっていたら、一番古いデータを破棄します。
-        if len(self.__queue_emotions) > EMOTION_ACCUM_COUNT:
+        if len(self.__queue_emotions) > self.__accum_count:
             del self.__queue_emotions[0]
         self.__queue_emotions.append(new_emotion)
 
@@ -56,7 +62,11 @@ class Emotion:
         """
         largest_emotion = max(self.__emotions)
         largest_index = self.__emotions.index(largest_emotion)
-        largest_rate = largest_emotion / sum(self.__emotions)
+        total = sum(self.__emotions)
+        if total == 0:
+            largest_rate = 0
+        else:
+            largest_rate = largest_emotion / sum(self.__emotions)
         return (largest_index, largest_rate)
 
     def get_largest_emotion_queue(self):
@@ -69,7 +79,11 @@ class Emotion:
         emotions = self.__sum_emotions()
         largest_emotion = max(emotions)
         largest_index = emotions.index(largest_emotion)
-        largest_rate = largest_emotion / sum(emotions)
+        total = sum(emotions)
+        if total == 0:
+            largest_rate = 0
+        else:
+            largest_rate = largest_emotion / sum(emotions)
         return (largest_index, largest_rate)
 
     def get_emotion_ratio(self, index = EMOTION_HAPPY):
@@ -79,7 +93,11 @@ class Emotion:
         感情の大きさは、全感情の合計からの割合としています。
         index = EMOTION_HAPPY として Happy の割合を返すことを目的にしています。
         """
-        ratio = self.__emotions[index] / sum(self.__emotions)
+        total = sum(self.__emotions)
+        if total == 0:
+            ratio = 0
+        else:
+            ratio = self.__emotions[index] / sum(self.__emotions)
         return ratio
 
     def get_emotion_ratio_queue(self, index = EMOTION_HAPPY):
@@ -91,6 +109,10 @@ class Emotion:
         index = EMOTION_HAPPY として Happy の割合を返すことを目的にしています。
         """
         emotions = self.__sum_emotions()
-        ratio = emotions[index] / sum(emotions)
+        total = sum(emotions)
+        if total == 0:
+            ratio = 0
+        else:
+            ratio = emotions[index] / sum(emotions)
         return ratio
 

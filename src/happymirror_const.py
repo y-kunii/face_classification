@@ -16,13 +16,13 @@ LED_FACEDETECT      = 1         # 顔認識通知用LEDの番号（最小値：0
 
 # emotion_prediction の順に並べた感情の色情報
 EMOTION_COLOR = (
-    # G    R    B
-    (  0,  63,   0),    #  0: angry
-    (  0,  63,  63),    #  1: disgust
-    ( 63,   0,   0),    #  2: fear
+    # R    G    B
+    ( 63,   0,   0),    #  0: angry
+    ( 63,   0,  63),    #  1: disgust
+    (  0,  63,   0),    #  2: fear
     ( 63,  63,   0),    #  3: happy
     (  0,   0,  63),    #  4: sad
-    ( 63,   0,  63),    #  5: surprise
+    (  0,  63,  63),    #  5: surprise
     ( 15,  15,  15),    #  6: normal
     (  0,   0,   0),    #  OFF
 )
@@ -46,7 +46,8 @@ EMOTION_NORMAL      = 6     # normal
 # 使用するピンや DMA 等を変更する場合、書き換えてください。
 LED_PIN             = 18        # NeoPixel に接続する GPIO pin （PWMをサポートしていること）
 LED_FREQ_HZ         = 800000    # LED 信号の周波数（Hz）
-LED_DMA             = 5         # LED に 送信する信号を生成する DMA チャネル
+LED_DMA             = 10         # LED に 送信する信号を生成する DMA チャネル
 LED_BRIGHTNESS      = 255       # LED の明るさ（0 ～ 255） 個別に変更するので、この定数は使いません。
 LED_INVERT          = False     # NPN トランジスタレベルシフトを使う場合、信号を反転させるため True にします。
+LED_CHANNEL         = 0         # GPIO 13, 19, 41, 45 or 53 を使うときは 1 にします。
 
