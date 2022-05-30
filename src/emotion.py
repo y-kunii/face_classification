@@ -62,7 +62,11 @@ class Emotion:
         """
         largest_emotion = max(self.__emotions)
         largest_index = self.__emotions.index(largest_emotion)
-        largest_rate = largest_emotion / sum(self.__emotions)
+        total = sum(self.__emotions)
+        if total == 0:
+            largest_rate = 0
+        else:
+            largest_rate = largest_emotion / sum(self.__emotions)
         return (largest_index, largest_rate)
 
     def get_largest_emotion_queue(self):
@@ -75,7 +79,11 @@ class Emotion:
         emotions = self.__sum_emotions()
         largest_emotion = max(emotions)
         largest_index = emotions.index(largest_emotion)
-        largest_rate = largest_emotion / sum(emotions)
+        total = sum(emotions)
+        if total == 0:
+            largest_rate = 0
+        else:
+            largest_rate = largest_emotion / sum(emotions)
         return (largest_index, largest_rate)
 
     def get_emotion_ratio(self, index = EMOTION_HAPPY):
@@ -85,7 +93,11 @@ class Emotion:
         感情の大きさは、全感情の合計からの割合としています。
         index = EMOTION_HAPPY として Happy の割合を返すことを目的にしています。
         """
-        ratio = self.__emotions[index] / sum(self.__emotions)
+        total = sum(self.__emotions)
+        if total == 0:
+            ratio = 0
+        else:
+            ratio = self.__emotions[index] / sum(self.__emotions)
         return ratio
 
     def get_emotion_ratio_queue(self, index = EMOTION_HAPPY):
@@ -97,6 +109,10 @@ class Emotion:
         index = EMOTION_HAPPY として Happy の割合を返すことを目的にしています。
         """
         emotions = self.__sum_emotions()
-        ratio = emotions[index] / sum(emotions)
+        total = sum(emotions)
+        if total == 0:
+            ratio = 0
+        else:
+            ratio = emotions[index] / sum(emotions)
         return ratio
 

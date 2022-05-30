@@ -7,7 +7,7 @@
 #
 #######################################################
 import time
-from neopixel import *
+from rpi_ws281x import PixelStrip, Color
 from happymirror_const import *
 from emotion import Emotion
 from notifier import Notifier
@@ -48,7 +48,7 @@ class HappyMirrorLed:
         LED オブジェクトを生成し、初期化します。
         """
         # NeoPixel オブジェクトを生成します。
-        self.__strip = Adafruit_NeoPixel(LED_NUM, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS)
+        self.__strip = PixelStrip(LED_NUM, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
         # NeoPixel ライブラリを初期化します。（最初に一度だけ実行する必要があります。）
         self.__strip.begin()
         self.all_led_off()
