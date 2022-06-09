@@ -174,7 +174,7 @@ class HappyMirrorLed:
 
         return leds
 
-    def __make_happy_led_data(level):
+    def __make_happy_led_data(self, level):
         """
         ハッピーのレベルをラインLEDの点灯データに変換します。
         @param level 点灯するLEDの割合（0 ～ 1.0）
@@ -213,6 +213,8 @@ class HappyMirrorLed:
 #        largest_index, _ = emotion.get_largest_emotion_queue()
 #        leds = self.__make_led_data(largest_index)
 #        print(f"__merge_led_color: leds = {leds}")      # debug
+
+        leds = [[0, 0, 0] for _ in range(LED_NUM)]
 
         # 頻繁に表情チェックすると値がバタつくので、少し間隔を置いて、定期的にチェックするようにします。
         # その間、emotion インスタンスにて表情データを積算してくれています。
