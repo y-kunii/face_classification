@@ -214,7 +214,11 @@ class HappyMirrorLed:
 #        leds = self.__make_led_data(largest_index)
 #        print(f"__merge_led_color: leds = {leds}")      # debug
 
-        if self.__is_check_time():
+        # 頻繁に表情チェックすると値がバタつくので、少し間隔を置いて、定期的にチェックするようにします。
+        # その間、emotion インスタンスにて表情データを積算してくれています。
+        if self.__is_check_time() == True:              # チェック時間を経過したらチェックします。
+            # 最後の表情チェック時刻を更新します。
+            self.start_check()
             # 確率が一番高い表情を調べます。
             largest_index, _ = emotion.get_largest_emotion_queue()
             self.__happy_keep_timer.set(largest_index)  # 今の感情から笑顔が続いている時間を設定します。
@@ -223,10 +227,8 @@ class HappyMirrorLed:
             # キープレベルから LED データに変換します。
             leds = self.__make_happy_led_data(keep_level)
 
-            print(f"led: {leds}")                       # debug
-            self.start_check()
-
         # leds（LED データのリスト）を渡して、顔検出とハートビート情報を上書きします。
         self.__merge_led_color(heart_beat, face_detect, emotion, leds)
+        print(f"LED: {leds}")                           # debug
         self.__show(leds)
 
