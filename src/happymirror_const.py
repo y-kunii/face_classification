@@ -5,12 +5,13 @@
 # 
 #######################################################
 
-HEARTBEAT_HOLD_TIME     = 1.0   # ハートビートを維持する時間（単位：秒、浮動小数点数で1マイクロ秒単位まで設定可能）
-FACEDETECT_HOLD_TIME    = 2.0   # 顔検出通知を維持する時間（単位：秒、浮動小数点数で1マイクロ秒単位まで設定可能）
+HEARTBEAT_HOLD_TIME     = 1.0   # ハートビートを維持する時間（単位：秒。小数で秒未満も設定可能）
+FACEDETECT_HOLD_TIME    = 2.0   # 顔検出通知を維持する時間（単位：秒。小数で秒未満も設定可能）
+HAPPY_KEEP_TIME         = 3.0   # 笑顔を持続してほしい時間（単位：秒。小数で秒未満も設定可能）
+HAPPY_FACE_CHECK_TIME   = 1.0   # 笑顔チェック周期。この時間が経過する度にそれまでの笑顔の割合を判定。（単位：秒。小数で秒未満も設定可能）
+EMOTION_ACCUM_COUNT     = 3     # 過去何回分の感情データを蓄えるか
 
-EMOTION_ACCUM_COUNT     = 30    # 過去何回分の感情データを蓄えるか
-
-LED_NUM             = 12        # LED の数（例：NeoPixel Ring→12、ラインLED(1m）→ 60）
+LED_NUM             = 60        # LED の数（例：NeoPixel Ring→12、ラインLED(1m）→ 60）
 LED_HEARTBEAT       = 0         # ハートビート用LEDの番号（最小値：0、LED_NUM未満にしてください。使わない場合はLED_NUM以上にしてください。）
 LED_FACEDETECT      = 1         # 顔認識通知用LEDの番号（最小値：0、LED_NUM未満にしてください。使わない場合はLED_NUM以上にしてください。）
 
