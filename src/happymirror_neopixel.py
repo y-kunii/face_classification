@@ -269,7 +269,7 @@ class HappyMirrorLed:
 #        return leds
         pass
 
-    def depict(self, heart_beat : Notifier, face_detect : Notifier, emotion : Notifier):
+    def depict(self, heart_beat : Notifier, face_detect : Notifier, emotion : Emotion):
         """
         引数で与えられた各インスタンスから情報を取得して LED を光らせます。
         @param heart_beat ハートビート用インスタンス
@@ -294,7 +294,9 @@ class HappyMirrorLed:
             self.__leds = self.__make_happy_led_data(keep_level)
             # キープレベルが1.0（MAX）になったらレインボー表示します。
             if keep_level >= 1.0:
-                rainbowCycle(self.__strip)
+                theaterChaseRainbow(self.__strip)
+                self.__happy_keep_timer.reset()     # 笑顔継続時間をリセットします。
+                emotion.reset()                     # レインボー後は感情データをリセットします。
 
         # leds（LED データのリスト）を渡して、顔検出とハートビート情報を上書きします。
         self.__merge_led_color(heart_beat, face_detect, emotion, self.__leds)
