@@ -38,6 +38,61 @@ def emotion_color(emotion, prediction):
     return led_data
 
 
+def theaterChase(strip, color, wait_ms=50, iterations=10):
+    """Movie theater light style chaser animation."""
+    for j in range(iterations):
+        for q in range(3):
+            for i in range(0, strip.numPixels(), 3):
+                strip.setPixelColor(i + q, color)
+            strip.show()
+            time.sleep(wait_ms / 1000.0)
+            for i in range(0, strip.numPixels(), 3):
+                strip.setPixelColor(i + q, 0)
+
+
+def wheel(pos):
+    """Generate rainbow colors across 0-255 positions."""
+    if pos < 85:
+        return Color(pos * 3, 255 - pos * 3, 0)
+    elif pos < 170:
+        pos -= 85
+        return Color(255 - pos * 3, 0, pos * 3)
+    else:
+        pos -= 170
+        return Color(0, pos * 3, 255 - pos * 3)
+
+
+def rainbow(strip, wait_ms=20, iterations=1):
+    """Draw rainbow that fades across all pixels at once."""
+    for j in range(256 * iterations):
+        for i in range(strip.numPixels()):
+            strip.setPixelColor(i, wheel((i + j) & 255))
+        strip.show()
+        time.sleep(wait_ms / 1000.0)
+
+
+def rainbowCycle(strip, wait_ms=20, iterations=5):
+    """Draw rainbow that uniformly distributes itself across all pixels."""
+    for j in range(256 * iterations):
+        for i in range(strip.numPixels()):
+            strip.setPixelColor(i, wheel(
+                (int(i * 256 / strip.numPixels()) + j) & 255))
+        strip.show()
+        time.sleep(wait_ms / 1000.0)
+
+
+def theaterChaseRainbow(strip, wait_ms=50):
+    """Rainbow movie theater light style chaser animation."""
+    for j in range(256):
+        for q in range(3):
+            for i in range(0, strip.numPixels(), 3):
+                strip.setPixelColor(i + q, wheel((i + j) % 255))
+            strip.show()
+            time.sleep(wait_ms / 1000.0)
+            for i in range(0, strip.numPixels(), 3):
+                strip.setPixelColor(i + q, 0)
+
+
 class EmotionKeepTimer():
     """
     表情（笑顔）をキープしている時間を計算するクラス。
@@ -233,10 +288,13 @@ class HappyMirrorLed:
             # 確率が一番高い表情を調べます。
             largest_index, _ = emotion.get_largest_emotion_queue()
             self.__happy_keep_timer.set(largest_index)  # 今の感情から笑顔が続いている時間を設定します。
-            # 笑顔をキープしている時間を、レベル（3段階中、何段階目か？）を取得します。
+            # 笑顔をキープしている時間を、レベル（MAXの時間に対するキープ時間の割合 0.0～1.0）を取得します。
             keep_level = self.__happy_keep_timer.get_keep_level()
             # キープレベルから LED データに変換します。
             self.__leds = self.__make_happy_led_data(keep_level)
+            # キープレベルが1.0（MAX）になったらレインボー表示します。
+            if keep_level >= 1.0:
+                rainbowCycle(self.__strip)
 
         # leds（LED データのリスト）を渡して、顔検出とハートビート情報を上書きします。
         self.__merge_led_color(heart_beat, face_detect, emotion, self.__leds)
