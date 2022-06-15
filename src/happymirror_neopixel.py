@@ -96,6 +96,8 @@ class HappyMirrorLed:
         self.all_led_off()
         self.__last_check_time = 0                  # 最後に表情をチェックした時刻
         self.__happy_keep_timer = EmotionKeepTimer()
+#        self.__leds = [[0, 0, 0] for _ in range(LED_NUM)]
+        self.__leds = self.default_led_color()
 
     def __del__(self):
         """
@@ -150,6 +152,15 @@ class HappyMirrorLed:
         すべての LED を消灯します。
         """
         self.__colorWipe(Color(0, 0, 0))
+
+    def default_led_color(self):
+        """
+        顔を検出したときや、笑顔以外の表情が強くなったときなど、
+        デフォルトでは全てのLEDを白色に点灯させます。
+        """
+        leds = [EMOTION_COLOR[EMOTION_COLOR_DEFAULT] for _ in range(LED_NUM)]
+        return leds
+
 
     def __make_led_data(self, index):
         """
@@ -214,8 +225,6 @@ class HappyMirrorLed:
 #        leds = self.__make_led_data(largest_index)
 #        print(f"__merge_led_color: leds = {leds}")      # debug
 
-        leds = [[0, 0, 0] for _ in range(LED_NUM)]
-
         # 頻繁に表情チェックすると値がバタつくので、少し間隔を置いて、定期的にチェックするようにします。
         # その間、emotion インスタンスにて表情データを積算してくれています。
         if self.__is_check_time() == True:              # チェック時間を経過したらチェックします。
@@ -227,10 +236,10 @@ class HappyMirrorLed:
             # 笑顔をキープしている時間を、レベル（3段階中、何段階目か？）を取得します。
             keep_level = self.__happy_keep_timer.get_keep_level()
             # キープレベルから LED データに変換します。
-            leds = self.__make_happy_led_data(keep_level)
+            self.__leds = self.__make_happy_led_data(keep_level)
 
         # leds（LED データのリスト）を渡して、顔検出とハートビート情報を上書きします。
-        self.__merge_led_color(heart_beat, face_detect, emotion, leds)
-        print(f"LED: {leds}")                           # debug
-        self.__show(leds)
+        self.__merge_led_color(heart_beat, face_detect, emotion, self.__leds)
+        print(f"LED: {self.__leds}")                        # debug
+        self.__show(self.__leds)
 

@@ -38,10 +38,10 @@ class Emotion:
         for index, value in enumerate(new_emotion):
             self.__emotions[index] += value
 
-        # 感情データが指定回数たまっていたら、一番古いデータを破棄します。
-        if len(self.__queue_emotions) > self.__accum_count:
-            del self.__queue_emotions[0]
+        # 新しいデータを追加します。
         self.__queue_emotions.append(new_emotion)
+        # データを最新からが指定個数より多い分は古いものを削除します。
+        self.__queue_emotions = self.__queue_emotions[-self.__accum_count:]
 
     def __sum_emotions(self):
         """
