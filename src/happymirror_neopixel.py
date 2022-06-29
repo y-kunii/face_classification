@@ -83,7 +83,7 @@ def rainbowCycle(strip, wait_ms=20, iterations=5):
 
 def theaterChaseRainbow(strip, wait_ms=50):
     """Rainbow movie theater light style chaser animation."""
-    for j in range(256):
+    for j in range(128):        # 256
         for q in range(3):
             for i in range(0, strip.numPixels(), 3):
                 strip.setPixelColor(i + q, wheel((i + j) % 255))
@@ -207,6 +207,8 @@ class HappyMirrorLed:
         すべての LED を消灯します。
         """
         self.__colorWipe(Color(0, 0, 0))
+        self.__leds = [EMOTION_COLOR[EMOTION_COLOR_LEDOFF] for _ in range(LED_NUM)]
+#        return leds
 
     def default_led_color(self):
         """
@@ -310,6 +312,6 @@ class HappyMirrorLed:
 
         # leds（LED データのリスト）を渡して、顔検出とハートビート情報を上書きします。
         self.__merge_led_color(heart_beat, face_detect, emotion, self.__leds)
-        print(f"LED: {self.__leds}")                        # debug
+#        print(f"LED: {self.__leds}")                        # debug
         self.__show(self.__leds)
 

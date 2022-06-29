@@ -47,9 +47,11 @@ class Emotion:
         """
         顔を検出しなかった場合、全部 0 のデータを追加します。
         """
-        new_emotion = [[0.0] * EMOTION_NUM]
+        new_emotion = [0.0] * EMOTION_NUM
         self.__queue_emotions.append(new_emotion)
         self.__queue_emotions = self.__queue_emotions[-self.__accum_count:]
+        # if len(self.__queue_emotions) > self.__accum_count:
+        #     del self.__queue_emotions[0]
 
     def __sum_emotions(self):
         """
@@ -57,6 +59,9 @@ class Emotion:
         感情ごとにデータを合計したリストを返します。
         """
         sum = [0.0] * EMOTION_NUM
+        print(f"__sum_emotions: {len(self.__queue_emotions)}")
+        print(self.__queue_emotions)
+        print("\n")
         for emotions in self.__queue_emotions:
             for index, value in enumerate(emotions):
                 sum[index] += value
