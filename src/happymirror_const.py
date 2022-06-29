@@ -33,16 +33,16 @@ EMOTION_COLOR_DEFAULT = 8   # 顔を検出したとき、笑顔以外の表情�
 
 # 感情の数と、各感情に割り当てられた番号
 # 割り当てられた番号は emotion_prediction の出力順を使っています。
-EMOTION_NUM         = 7     # 感情の数
+EMOTION_NUM         = 7             # 感情の数
 
-EMOTION_ANGRY       = 0     # angry
-EMOTION_DISGUST     = 1     # disgust
-EMOTION_FEAR        = 2     # fear
-EMOTION_HAPPY       = 3     # happy
-EMOTION_SAD         = 4     # sad
-EMOTION_SURPRISE    = 5     # surprise
-EMOTION_NORMAL      = 6     # normal
-#EMOTION_UNKNOWN     = 7     # その他／OFFするときなどに使用する
+EMOTION_ANGRY       = 0             # angry
+EMOTION_DISGUST     = 1             # disgust
+EMOTION_FEAR        = 2             # fear
+EMOTION_HAPPY       = 3             # happy
+EMOTION_SAD         = 4             # sad
+EMOTION_SURPRISE    = 5             # surprise
+EMOTION_NORMAL      = 6             # normal
+EMOTION_UNKNOWN     = EMOTION_NUM   # その他／OFFするときなどに使用する
 
 
 # Raspberry Pi 用 NeoPixel ライブラリ制御用定数

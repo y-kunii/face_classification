@@ -43,6 +43,14 @@ class Emotion:
         # データを最新からが指定個数より多い分は古いものを削除します。
         self.__queue_emotions = self.__queue_emotions[-self.__accum_count:]
 
+    def no_faces(self):
+        """
+        顔を検出しなかった場合、全部 0 のデータを追加します。
+        """
+        new_emotion = [[0.0] * EMOTION_NUM]
+        self.__queue_emotions.append(new_emotion)
+        self.__queue_emotions = self.__queue_emotions[-self.__accum_count:]
+
     def __sum_emotions(self):
         """
         指定回数分の感情データを取っておくタイプの場合で、
@@ -82,6 +90,7 @@ class Emotion:
         total = sum(emotions)
         if total == 0:
             largest_rate = 0
+            largest_index = EMOTION_UNKNOWN
         else:
             largest_rate = largest_emotion / sum(emotions)
         return (largest_index, largest_rate)

@@ -70,11 +70,12 @@ while True:
     bgr_image = video_capture.read()[1]
     gray_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2GRAY)
     rgb_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2RGB)
-    heartbeat_notifier.notice()                                  # カメラ画像の読み取りができればハートビートを打つ
+    heartbeat_notifier.notice()                         # カメラ画像の読み取りができればハートビートを打つ
 
     faces = detect_faces(face_detection, gray_image)
     if len(faces) != 0:
-        face_detect_notifier.notice()                             # 顔を検出したら通知する。
+        face_detect_notifier.notice()                   # 顔を検出したら通知する。
+        emotion_data.no_faces()                         # 顔を検出していない情報を emotion_data に知らせる。
 
     for face_coordinates in faces:
 

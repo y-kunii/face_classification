@@ -293,16 +293,20 @@ class HappyMirrorLed:
             self.start_check()
             # 確率が一番高い表情を調べます。
             largest_index, _ = emotion.get_largest_emotion_queue()
-            self.__happy_keep_timer.set(largest_index)  # 今の感情から笑顔が続いている時間を設定します。
-            # 笑顔をキープしている時間を、レベル（MAXの時間に対するキープ時間の割合 0.0～1.0）を取得します。
-            keep_level = self.__happy_keep_timer.get_keep_level()
-            # キープレベルから LED データに変換します。
-            self.__leds = self.__make_happy_led_data(keep_level)
-            # キープレベルが1.0（MAX）になったらレインボー表示します。
-            if keep_level >= 1.0:
-                theaterChaseRainbow(self.__strip)
-                self.__happy_keep_timer.reset()     # 笑顔継続時間をリセットします。
-                emotion.reset()                     # レインボー後は感情データをリセットします。
+
+            if largest_index == EMOTION_UNKNOWN:            # 顔を全く検出していないときは、LED を消灯します。
+                self.all_led_off()
+            else:
+                self.__happy_keep_timer.set(largest_index)  # 今の感情から笑顔が続いている時間を設定します。
+                # 笑顔をキープしている時間を、レベル（MAXの時間に対するキープ時間の割合 0.0～1.0）を取得します。
+                keep_level = self.__happy_keep_timer.get_keep_level()
+                # キープレベルから LED データに変換します。
+                self.__leds = self.__make_happy_led_data(keep_level)
+                # キープレベルが1.0（MAX）になったらレインボー表示します。
+                if keep_level >= 1.0:
+                    theaterChaseRainbow(self.__strip)
+                    self.__happy_keep_timer.reset()     # 笑顔継続時間をリセットします。
+                    emotion.reset()                     # レインボー後は感情データをリセットします。
 
         # leds（LED データのリスト）を渡して、顔検出とハートビート情報を上書きします。
         self.__merge_led_color(heart_beat, face_detect, emotion, self.__leds)
