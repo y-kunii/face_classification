@@ -248,15 +248,21 @@ class HappyMirrorLed:
         EMOTION_STRENGTH = 1.0
         leds = []
 
-        happy_led_num = int(LED_NUM * level)
-        for i in range(LED_NUM):
+        half_led_num = LED_NUM // 2     # LED の半分の数を計算。念のため int 型にキャスト。
+        middle_led   = LED_NUM % 2      # LED の数が奇数の場合、中央の LED のデータを別途追加する必要があるため。
+        happy_led_num = int(half_led_num * level)
+        for i in range(half_led_num):
             led_data = []
             if i <= happy_led_num:
                 led_data = emotion_color(EMOTION_HAPPY, EMOTION_STRENGTH)
             else:
-                led_data = emotion_color(EMOTION_COLOR_LEDOFF, EMOTION_STRENGTH)
+                led_data = emotion_color(EMOTION_COLOR_DEFAULT, EMOTION_STRENGTH)
             leds.append(led_data[1])
 
+        other_side_leds = list(reversed(leds))  # もう半分の LED データを作成（リストを反転）。
+        if middle_led != 0:                     # LED が奇数個の場合は中央の LED データを追加（中央に一番近いデータをコピー）。
+            leds.extend(leds[-1])
+        leds.extend(other_side_leds)            # 半分の LED データにもう半分の反転データを連結してライン LED 全体のデータにします。
         return leds
 
     def __merge_led_color(self, heart_beat : Notifier, face_detect : Notifier, emotion : Emotion, leds : list):
