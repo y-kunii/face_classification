@@ -5,10 +5,11 @@
 # 
 #######################################################
 
-HEARTBEAT_HOLD_TIME     = 1.0   # ハートビートを維持する時間（単位：秒、浮動小数点数で1マイクロ秒単位まで設定可能）
-FACEDETECT_HOLD_TIME    = 2.0   # 顔検出通知を維持する時間（単位：秒、浮動小数点数で1マイクロ秒単位まで設定可能）
-
-EMOTION_ACCUM_COUNT     = 30    # 過去何回分の感情データを蓄えるか
+HEARTBEAT_HOLD_TIME     = 1.0   # ハートビートを維持する時間（単位：秒。小数で秒未満も設定可能）
+FACEDETECT_HOLD_TIME    = 2.0   # 顔検出通知を維持する時間（単位：秒。小数で秒未満も設定可能）
+HAPPY_KEEP_TIME         = 3.0   # 笑顔を持続してほしい時間（単位：秒。小数で秒未満も設定可能）
+HAPPY_FACE_CHECK_TIME   = 0.3   # 笑顔チェック周期。この時間が経過する度にそれまでの笑顔の割合を判定。（単位：秒。小数で秒未満も設定可能）
+EMOTION_ACCUM_COUNT     = 5     # 過去何回分の感情データを蓄えるか
 
 LED_NUM             = 12        # LED の数（例：NeoPixel Ring→12、ラインLED(1m）→ 60）
 LED_HEARTBEAT       = 0         # ハートビート用LEDの番号（最小値：0、LED_NUM未満にしてください。使わない場合はLED_NUM以上にしてください。）
@@ -25,21 +26,23 @@ EMOTION_COLOR = (
     (  0,  63,  63),    #  5: surprise
     ( 15,  15,  15),    #  6: normal
     (  0,   0,   0),    #  OFF
+    ( 20,  20,  20),    #  default
 )
-EMOTION_COLOR_LEDOFF = 7    # LED を OFF にするときの EMOTION_COLOR リストの要素番号
+EMOTION_COLOR_LEDOFF  = 7   # LED を OFF にするときの EMOTION_COLOR リストの要素番号
+EMOTION_COLOR_DEFAULT = 8   # 顔を検出したとき、笑顔以外の表情のときなどデフォルトの色
 
 # 感情の数と、各感情に割り当てられた番号
 # 割り当てられた番号は emotion_prediction の出力順を使っています。
-EMOTION_NUM         = 7     # 感情の数
+EMOTION_NUM         = 7             # 感情の数
 
-EMOTION_ANGRY       = 0     # angry
-EMOTION_DISGUST     = 1     # disgust
-EMOTION_FEAR        = 2     # fear
-EMOTION_HAPPY       = 3     # happy
-EMOTION_SAD         = 4     # sad
-EMOTION_SURPRISE    = 5     # surprise
-EMOTION_NORMAL      = 6     # normal
-#EMOTION_UNKNOWN     = 7     # その他／OFFするときなどに使用する
+EMOTION_ANGRY       = 0             # angry
+EMOTION_DISGUST     = 1             # disgust
+EMOTION_FEAR        = 2             # fear
+EMOTION_HAPPY       = 3             # happy
+EMOTION_SAD         = 4             # sad
+EMOTION_SURPRISE    = 5             # surprise
+EMOTION_NORMAL      = 6             # normal
+EMOTION_UNKNOWN     = EMOTION_NUM   # その他／OFFするときなどに使用する
 
 
 # Raspberry Pi 用 NeoPixel ライブラリ制御用定数
