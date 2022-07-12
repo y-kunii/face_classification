@@ -81,9 +81,9 @@ def rainbowCycle(strip, wait_ms=20, iterations=5):
         time.sleep(wait_ms / 1000.0)
 
 
-def theaterChaseRainbow(strip, wait_ms=50):
+def theaterChaseRainbow(strip, wait_ms=50, iterations=256):
     """Rainbow movie theater light style chaser animation."""
-    for j in range(128):        # 256
+    for j in range(iterations):
         for q in range(3):
             for i in range(0, strip.numPixels(), 3):
                 strip.setPixelColor(i + q, wheel((i + j) % 255))
@@ -263,7 +263,7 @@ class HappyMirrorLed:
 
         other_side_leds = list(reversed(leds))  # もう半分の LED データを作成（リストを反転）。
         if middle_led != 0:                     # LED が奇数個の場合は中央の LED データを追加（中央に一番近いデータをコピー）。
-            leds.extend(leds[-1])
+            leds.append(leds[-1])
         leds.extend(other_side_leds)            # 半分の LED データにもう半分の反転データを連結してライン LED 全体のデータにします。
         return leds
 
@@ -296,8 +296,9 @@ class HappyMirrorLed:
             # 確率が一番高い表情を調べます。
             largest_index, _ = emotion.get_largest_emotion_queue()
 
-            if largest_index == EMOTION_UNKNOWN:            # 顔を全く検出していないときは、LED を消灯します。
-                self.all_led_off()
+            if largest_index == EMOTION_UNKNOWN:            # 顔を全く検出していないときは、
+                self.all_led_off()                          # LED を消灯して、
+                self.__happy_keep_timer.reset()             # 笑顔継続時間をリセットします。
             else:
                 self.__happy_keep_timer.set(largest_index)  # 今の感情から笑顔が続いている時間を設定します。
                 # 笑顔をキープしている時間を、レベル（MAXの時間に対するキープ時間の割合 0.0～1.0）を取得します。
@@ -306,9 +307,10 @@ class HappyMirrorLed:
                 self.__leds = self.__make_happy_led_data(keep_level)
                 # キープレベルが1.0（MAX）になったらレインボー表示します。
                 if keep_level >= 1.0:
-                    theaterChaseRainbow(self.__strip)
+                    theaterChaseRainbow(self.__strip, iterations=ANIMATION_ITERATION)
                     self.__happy_keep_timer.reset()     # 笑顔継続時間をリセットします。
                     emotion.reset()                     # レインボー後は感情データをリセットします。
+                    self.__leds = self.default_led_color()
 
         # leds（LED データのリスト）を渡して、顔検出とハートビート情報を上書きします。
         self.__merge_led_color(heart_beat, face_detect, emotion, self.__leds)

@@ -73,11 +73,11 @@ while True:
     heartbeat_notifier.notice()                         # カメラ画像の読み取りができればハートビートを打つ
 
     faces = detect_faces(face_detection, gray_image)
-    if len(faces) != 0:
-        face_detect_notifier.notice()                   # 顔を検出したら通知する。
+    if len(faces) == 0:
         emotion_data.no_faces()                         # 顔を検出していない情報を emotion_data に知らせる。
 
     for face_coordinates in faces:
+        face_detect_notifier.notice()                   # 顔を検出したら通知する。
 
         x1, x2, y1, y2 = apply_offsets(face_coordinates, emotion_offsets)
         gray_face = gray_image[y1:y2, x1:x2]
@@ -142,11 +142,11 @@ while True:
         else:
             color = emotion_probability * np.asarray((0, 254, 0))
 
-        print(emotion_text,color,emotion_probability)
+#        print(emotion_text,color,emotion_probability)
 
         # debug
         time_now = time.time()
-        print("time span: ", (time_now - time_before))   # 前回からの経過時間
+#        print("time span: ", (time_now - time_before))   # 前回からの経過時間
         time_before = time_now
 
         # 感情値（各感情の確率）を蓄積します。
