@@ -48,7 +48,7 @@ EMOTION_UNKNOWN     = EMOTION_NUM   # その他／OFFするときなどに使用
 
 # Raspberry Pi 用 NeoPixel ライブラリ制御用定数
 # 使用するピンや DMA 等を変更する場合、書き換えてください。
-LED_PIN             = 18        # NeoPixel に接続する GPIO pin （PWMをサポートしていること）
+LED_PIN             = 21        # NeoPixel に接続する GPIO pin （PWMをサポートしていること）
 LED_FREQ_HZ         = 800000    # LED 信号の周波数（Hz）
 LED_DMA             = 10         # LED に 送信する信号を生成する DMA チャネル
 LED_BRIGHTNESS      = 255       # LED の明るさ（0 ～ 255） 個別に変更するので、この定数は使いません。
