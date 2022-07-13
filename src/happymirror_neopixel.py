@@ -11,6 +11,7 @@ from rpi_ws281x import PixelStrip, Color
 from happymirror_const import *
 from emotion import Emotion
 from notifier import Notifier
+import subprocess
 
 # NeoPixel 12 Ring に合わせて、各感情に 2 個ずつ LED を割り当て、プルチックの感情の輪と同じ並びにする。
 # ただし、プルチックからの警戒と敬愛は削除。
@@ -307,6 +308,7 @@ class HappyMirrorLed:
                 self.__leds = self.__make_happy_led_data(keep_level)
                 # キープレベルが1.0（MAX）になったらレインボー表示します。
                 if keep_level >= 1.0:
+                    subprocess.Popen(['aplay', '001_OnlineMeeting.wav'])
                     theaterChaseRainbow(self.__strip, iterations=ANIMATION_ITERATION)
                     self.__happy_keep_timer.reset()     # 笑顔継続時間をリセットします。
                     emotion.reset()                     # レインボー後は感情データをリセットします。
