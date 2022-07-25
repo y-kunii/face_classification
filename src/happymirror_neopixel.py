@@ -311,7 +311,7 @@ class HappyMirrorLed:
                     subprocess.Popen(['aplay', '001_OnlineMeeting.wav'])
                     theaterChaseRainbow(self.__strip, iterations=ANIMATION_ITERATION)
                     self.__happy_keep_timer.reset()     # 笑顔継続時間をリセットします。
-                    emotion.reset()                     # レインボー後は感情データをリセットします。
+                    emotion.reset_after_full()          # レインボー後は感情データをリセットします。
                     self.__leds = self.default_led_color()
 
         # leds（LED データのリスト）を渡して、顔検出とハートビート情報を上書きします。
