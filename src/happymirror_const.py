@@ -46,6 +46,9 @@ EMOTION_SURPRISE    = 5             # surprise
 EMOTION_NORMAL      = 6             # normal
 EMOTION_UNKNOWN     = EMOTION_NUM   # その他／OFFするときなどに使用する
 
+# 音声出力時の状況
+SITUATION_FACEDETECT    = 0         # 顔検出時
+SITUATION_HAPPY_FULL    = 1         # 笑顔が規定時間継続した時
 
 # Raspberry Pi 用 NeoPixel ライブラリ制御用定数
 # 使用するピンや DMA 等を変更する場合、書き換えてください。
