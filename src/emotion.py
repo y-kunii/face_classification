@@ -5,6 +5,7 @@
 # 
 #######################################################
 from happymirror_const import *
+import time
 
 class Emotion:
     """
@@ -14,6 +15,7 @@ class Emotion:
         self.__emotions = [0.0] * EMOTION_NUM
         self.__accum_count = accum_count
         self.__queue_emotions = [[0.0] * EMOTION_NUM]
+        self.__reset_time_after_full = time.time() + EMOTION_RESET_TIME_AFTER_FULL
 
     def reset(self):
         """
@@ -21,6 +23,13 @@ class Emotion:
         """
         self.__emotions = [0.0] * EMOTION_NUM
         self.__queue_emotions = [[0.0] * EMOTION_NUM]
+
+    def reset_after_full(self):
+        """
+        一度満点になった後、新しいアクションを起こすまでの間隔をリセットします。
+        """
+        self.reset()
+        self.__reset_time_after_full = time.time()
 
     def reset_sum(self):
         """
@@ -34,6 +43,10 @@ class Emotion:
         データを加算していくタイプ（前半のコード）がいいか、
         指定回数分取っておき、古いのから捨てていくタイプ（後半のコード）のがいいか。
         """
+        # 一度満点（レインボー表示）になった後は、少し間隔を空けるため、入力されたデータを読み捨てます。
+        if (time.time() - self.__reset_time_after_full) < EMOTION_RESET_TIME_AFTER_FULL:
+            return
+
 #        self.__emotions = [x + y for x, y in zip(self.__emotions, new_emotion)]
         for index, value in enumerate(new_emotion):
             self.__emotions[index] += value

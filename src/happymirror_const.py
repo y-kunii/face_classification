@@ -11,6 +11,7 @@ HAPPY_KEEP_TIME         = 4.0   # 笑顔を持続してほしい時間（単位�
 HAPPY_FACE_CHECK_TIME   = 0.1   # 笑顔チェック周期。この時間が経過する度にそれまでの笑顔の割合を判定。（単位：秒。小数で秒未満も設定可能）
 EMOTION_ACCUM_COUNT     = 3     # 過去何回分の感情データを蓄えるか
 ANIMATION_ITERATION     = 30    # 笑顔の持続時間が HAPPY_KEEP_TIME 以上になったときに LED をキラキラさせる回数（これで時間調整してください。）
+EMOTION_RESET_TIME_AFTER_FULL = 5.0 # HAPPY_KEEP_TIME 経過後、次のアクションを開始するまでの間隔（単位：秒）。少し間を開けないと立て続けに動作して鬱陶しい。
 
 LED_NUM             = 37        # LED の数（例：NeoPixel Ring→12、ラインLED(1m）→ 60）
 LED_HEARTBEAT       = 0         # ハートビート用LEDの番号（最小値：0、LED_NUM未満にしてください。使わない場合はLED_NUM以上にしてください。）
@@ -45,6 +46,9 @@ EMOTION_SURPRISE    = 5             # surprise
 EMOTION_NORMAL      = 6             # normal
 EMOTION_UNKNOWN     = EMOTION_NUM   # その他／OFFするときなどに使用する
 
+# 音声出力時の状況
+SITUATION_FACEDETECT    = 0         # 顔検出時
+SITUATION_HAPPY_FULL    = 1         # 笑顔が規定時間継続した時
 
 # Raspberry Pi 用 NeoPixel ライブラリ制御用定数
 # 使用するピンや DMA 等を変更する場合、書き換えてください。
