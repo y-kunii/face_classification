@@ -72,9 +72,9 @@ class Emotion:
         感情ごとにデータを合計したリストを返します。
         """
         sum = [0.0] * EMOTION_NUM
-        print(f"__sum_emotions: {len(self.__queue_emotions)}")
-        print(self.__queue_emotions)
-        print("\n")
+#        print(f"__sum_emotions: {len(self.__queue_emotions)}")
+#        print(self.__queue_emotions)
+#        print("\n")
         for emotions in self.__queue_emotions:
             for index, value in enumerate(emotions):
                 sum[index] += value
