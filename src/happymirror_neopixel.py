@@ -320,7 +320,7 @@ class HappyMirrorLed:
                     self.__happy_keep_timer.reset()     # 笑顔継続時間をリセットします。
                     emotion.reset_after_full()          # レインボー後は感情データをリセットします。
                     self.__leds = self.default_led_color()
-            self.__last_emotion == largest_index
+            self.__last_emotion = largest_index
 
         # leds（LED データのリスト）を渡して、顔検出とハートビート情報を上書きします。
         self.__merge_led_color(heart_beat, face_detect, emotion, self.__leds)
