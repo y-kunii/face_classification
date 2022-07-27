@@ -76,7 +76,20 @@ while True:
     if len(faces) == 0:
         emotion_data.no_faces()                         # 顔を検出していない情報を emotion_data に知らせる。
 
+    face_num = 0
     for face_coordinates in faces:
+        # 一番大きい顔を取得し、その値が 100 以上なら表情判定に進みます。
+        # それ以外は遠くの人や横から覗いている人と考えて、無視するようにします。
+        # 展示会で多くの人を認識したり、遠くのパネルなどの誤認識をはじくため。
+        # face_coordinates はそれぞれ以下のようなリストになっていて、[X座標, Y座標, サイズ, サイズ] のようなので、
+        # 3 番目の要素 face_coordinates[2] を大きさの判定材料にします。
+        # [239 230 132 132]
+        # [222 326  53  53]
+        print(face_coordinates)
+        if face_coordinates[2] < 100:
+            continue
+
+        face_num += 1
         face_detect_notifier.notice()                   # 顔を検出したら通知する。
 
         x1, x2, y1, y2 = apply_offsets(face_coordinates, emotion_offsets)
@@ -174,6 +187,9 @@ while True:
         draw_bounding_box(face_coordinates, rgb_image, color)
         draw_text(face_coordinates, rgb_image, emotion_text,
                   color, 0, -45, 1, 1)
+
+    if face_num == 0:
+        emotion_data.no_faces()                         # 顔が小さい（遠くにいる）ときは、検出なし扱いとします。
 
     # LED を制御します。
     # for ブロックの中は顔を検出されないと実行されないので、for の外で行います。
