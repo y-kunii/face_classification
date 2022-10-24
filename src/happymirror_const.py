@@ -7,9 +7,10 @@
 
 HEARTBEAT_HOLD_TIME     = 1.0   # ハートビートを維持する時間（単位：秒。小数で秒未満も設定可能）
 FACEDETECT_HOLD_TIME    = 2.0   # 顔検出通知を維持する時間（単位：秒。小数で秒未満も設定可能）
-HAPPY_KEEP_TIME         = 4.0   # 笑顔を持続してほしい時間（単位：秒。小数で秒未満も設定可能）
+
+HAPPY_KEEP_TIME         = 3.0   # 笑顔を持続してほしい時間（単位：秒。小数で秒未満も設定可能）
 HAPPY_FACE_CHECK_TIME   = 0.1   # 笑顔チェック周期。この時間が経過する度にそれまでの笑顔の割合を判定。（単位：秒。小数で秒未満も設定可能）
-EMOTION_ACCUM_COUNT     = 3     # 過去何回分の感情データを蓄えるか
+EMOTION_ACCUM_COUNT     = 6     # 過去何回分の感情データを蓄えるか
 ANIMATION_ITERATION     = 30    # 笑顔の持続時間が HAPPY_KEEP_TIME 以上になったときに LED をキラキラさせる回数（これで時間調整してください。）
 EMOTION_RESET_TIME_AFTER_FULL = 5.0 # HAPPY_KEEP_TIME 経過後、次のアクションを開始するまでの間隔（単位：秒）。少し間を開けないと立て続けに動作して鬱陶しい。
 
