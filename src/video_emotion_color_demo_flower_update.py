@@ -27,7 +27,7 @@ from datetime import datetime as dt
 from notifier import Notifier           # ハートビート、顔検出通知用
 from emotion import Emotion             # 感情データ処理用
 from happymirror_const import *
-from flower_neopixel_test import FlowerLed # LED 制御用
+from flower_neopixel_update import FlowerLed # LED 制御用
 
 # parameters for loading data and images
 detection_model_path = '../trained_models/detection_models/haarcascade_frontalface_default.xml'
