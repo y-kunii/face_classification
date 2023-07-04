@@ -12,6 +12,7 @@ from happymirror_const import *
 from emotion import Emotion
 from notifier import Notifier
 from happymirror_voice import *
+from happymirror_beacon import *
 # import subprocess
 
 # NeoPixel 12 Ring に合わせて、各感情に 2 個ずつ LED を割り当て、プルチックの感情の輪と同じ並びにする。
@@ -317,6 +318,7 @@ class HappyMirrorLed:
 #                    subprocess.Popen(['aplay', '001_OnlineMeeting.wav'])
                     play_voice(SITUATION_HAPPY_FULL)
                     theaterChaseRainbow(self.__strip, iterations=ANIMATION_ITERATION)
+                    send_iBeacon(EMOTION_HAPPY, 1)      # iBeacon 送信
                     self.__happy_keep_timer.reset()     # 笑顔継続時間をリセットします。
                     emotion.reset_after_full()          # レインボー後は感情データをリセットします。
                     self.__leds = self.default_led_color()
