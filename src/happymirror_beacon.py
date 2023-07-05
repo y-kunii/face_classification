@@ -1,3 +1,13 @@
+# coding: UTF-8
+#######################################################
+#
+# happymirror_beacon.py
+#
+# HappyMirror 用 iBeacon 送信
+#
+# ifLink の if として使用します。
+#
+#######################################################
 from bluetooth.ble import BeaconService
 import time
 from happymirror_const import *
@@ -48,7 +58,7 @@ def send_iBeacon(emotion, level=0):
 
     # しばらく待ってアドバタイズパケット停止
     # 1 発だけ送信するのは難しい？
-    time.sleep(0.2)
+    time.sleep(0.5)
     service.stop_advertising()
 
 
