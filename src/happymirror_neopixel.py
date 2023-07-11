@@ -288,10 +288,6 @@ class HappyMirrorLed:
         @param face_detect 顔検出用インスタンス
         @param emotion 感情データ用インスタンス
         """
-#        largest_index, _ = emotion.get_largest_emotion_queue()
-#        leds = self.__make_led_data(largest_index)
-#        print(f"__merge_led_color: leds = {leds}")      # debug
-
         # 頻繁に表情チェックすると値がバタつくので、少し間隔を置いて、定期的にチェックするようにします。
         # その間、emotion インスタンスにて表情データを積算してくれています。
         if self.__is_check_time() == True:              # チェック時間を経過したらチェックします。
