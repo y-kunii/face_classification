@@ -81,7 +81,7 @@ while True:
         # 3 番目の要素 face_coordinates[2] を大きさの判定材料にします。
         # [239 230 132 132]
         # [222 326  53  53]
-        print(face_coordinates)
+#        print(face_coordinates)
         if face_coordinates[2] < 100:
             continue
 

@@ -39,7 +39,8 @@ def send_iBeacon(emotion, level=0):
     emotion : int
         EMOTION_*** で定義した感情値（EMTION_ANGRY:angry, EMOTION_HAPPY:happy, 等）
     level : int
-        感情の強さ、ON/OFF、続いた長さなど
+        感情が続いた長さなど
+        0 ～ 100 の値を取る想定ですが、100 より大きくても良いと考えます。（ifLink ルール側で対応。）
     """
     service = BeaconService()
 
@@ -52,13 +53,15 @@ def send_iBeacon(emotion, level=0):
     minor = swap_endian(level)
 
     # アドバタイズパケット送信
-    # おそらく 200ms 周期で送信しています。
+    # おそらく第5引数が送信周期（ms）だと思います。
     print(f"Sending iBeacon: {major}-{minor}...")    # debug
     service.start_advertising(UUID, major, minor, 1, 200)
 
     # しばらく待ってアドバタイズパケット停止
-    # 1 発だけ送信するのは難しい？
-    time.sleep(0.5)
+    # 1 発だけ送信／受信するのは難しい？
+    # ビーコンを連続して受信した場合の動作抑制は ifLink のルール側で対応します。
+    # こちらは確実にビーコンが受信されるように少し長く送信し続けるようにします。
+    time.sleep(2.0)
     service.stop_advertising()
 
 
