@@ -380,8 +380,8 @@ class HappyMirrorLed:
 #                    subprocess.Popen(['aplay', '001_OnlineMeeting.wav'])
                     print("happy full")
                     play_voice(SITUATION_HAPPY_FULL)
-                    theaterChaseRainbow(self.__strip, iterations=ANIMATION_ITERATION)
                     send_iBeacon(current_emotion, int(current_level * 100))       # iBeacon 送信
+                    theaterChaseRainbow(self.__strip, iterations=ANIMATION_ITERATION)
                     self.__emotion_keep_timer.reset()                           # 笑顔継続時間をリセットします。
                     emotion.reset_after_full()                                  # レインボー後は感情データをリセットします。
                     self.__leds = self.default_led_color()
