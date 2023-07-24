@@ -99,43 +99,118 @@ def theaterChaseRainbow(strip, wait_ms=50, iterations=256):
 class EmotionKeepTimer():
     """
     表情（笑顔）をキープしている時間を計算するクラス。
-    ただし、表情の更新は set() で都度行う必要があります。（自動的に時間計算するわけではありません。）
+    表情が変わったり、顔を検出しなくなったら、それまで継続していた表情を保存しておきます。
+    保存する表情は、笑顔に限りません。（怒や悲が続いた時間も取得します。）
+    表情の種類や継続時間によるアクションの取り方は、このクラスの利用側で決めてください。
     """
     def __init__(self):
-        self.__emotion_start_time = 0   # 笑顔が始まった時刻。笑顔でないときは 0 にリセットします。
+        self.__last_emotion = EMOTION_UNKNOWN   # 表情が途切れる前の表情
+        self.__last_keep    = 0                 # 表情が続いた時間
+        self.__emotion      = EMOTION_UNKNOWN   # 前の（継続中の）表情
+        self.__start_time   = 0                 # 表情が始まった時刻
+        self.__keep         = 0                 # 表情が継続している時間
 
     def reset(self):
         """
-        笑顔の開始時刻をリセットします。
+        表情の開始時刻をリセットします。
         """
-        self.__emotion_start_time = 0
+        self.__last_emotion = EMOTION_UNKNOWN   # 表情が途切れる前の表情
+        self.__last_keep    = 0                 # 表情が続いた時間
+        self.__emotion      = EMOTION_UNKNOWN   # 前の（継続中の）表情
+        self.__start_time   = 0                 # 表情が始まった時刻
+        self.__keep         = 0                 # 表情が継続している時間
+
+    def reset_last(self):
+        """
+        表情が途切れる前の表情データをリセットします。
+        """
+        self.__last_emotion = EMOTION_UNKNOWN   # 表情が途切れる前の表情
+        self.__last_keep    = 0                 # 表情が続いた時間
 
     def set(self, emotion):
-        if emotion == EMOTION_HAPPY:
-            if self.__emotion_start_time == 0:          # 笑顔開始
-                self.__emotion_start_time = time.time() # 現在の時刻を設定
-            else:
-                pass                                    # 笑顔が続いているときは何もしません。
-        else:                                           # 笑顔でなくなったらタイマをリセットします。
-            self.reset()
+        """
+        新しく取得した表情をセットします。
 
-    def get_keep_time(self):
+        Parameters
+        ----------
+        emotion : int
+            今回取得した表情
         """
-        笑顔が続いている時間を返します。
-        """
-        if self.__emotion_start_time == 0:
-            return 0
-        else:
-            return time.time() - self.__emotion_start_time
+        if emotion != self.__emotion:               # 前の表情と今回の表情が異なる（途切れた）場合
+            self.__last_emotion = self.__emotion    # 前の表情を保存
+            self.__last_keep    = self.__keep       # 前の表情が続いた時間を保存
+            self.__emotion      = emotion           # 表情を今回の表情に更新
+            self.__start_time   = time.time()       # 今回の表情が始まった時刻を現在時刻に設定
+            self.__keep         = 0                 # 表情の継続時間は 0 に設定
 
-    def get_keep_level(self):
+        else:                                   # 表情が継続している場合
+            if emotion != EMOTION_UNKNOWN:                      # 顔を検出している場合
+                self.__keep = time.time() - self.__start_time   # 開始時刻から現在時刻までの時間を計算
+                if self.__keep >= HAPPY_KEEP_TIME:              # 規定時間以上に達したら一度途切れたのと同様に「途切れる前の表情」に保存します。
+                    self.__last_emotion = self.__emotion
+                    self.__last_keep    = self.__keep
+                else:                                           # 継続中は何もしません。
+                    pass
+            else:                               # 顔を検出していない状況が続いているときは何もしません。
+                pass
+
+    def get_level(self, keep_time):
         """
-        笑顔が継続してほしい時間に対する、継続時間の割合を返します。
-        3秒続いてほしいところ、現時点で2秒続いていたら 2/3 = 0.666 を返します。
+        継続時間レベルを計算します。
+
+        「継続時間レベル」とは
+        継続してほしい時間に対する、継続時間の割合を返します。
+        3秒続いてほしいところ、2秒続いていたら 2/3 = 0.666 を返します。
         3秒以上続いたら、1.0 を返します。
+
+        Parameters
+        ----------
+        keep_time :
+            計算対象となる時間
+
+        Returns
+        -------
+        level : float
+            継続時間レベル
         """
-        keep_time = self.get_keep_time()
         return min((keep_time / HAPPY_KEEP_TIME), 1.0)
+
+    def get_last_emotion(self):
+        """
+        途切れる前の表情と継続時間レベルを取得します。
+        途切れる前の表情データは削除します。
+
+        Returns
+        -------
+        (emotion, level) : tuple
+        emotion : int
+            途切れる前の表情、または規定時間以上に達した表情
+        level : float
+            emotion の継続時間レベル（0.0 ～ 1.0）
+        """
+        last_emotion = self.__last_emotion
+        last_level   = self.get_level(self.__last_keep)
+        
+#        self.__last_emotion = EMOTION_UNKNOWN
+#        self.__last_keep    = 0
+
+        return (last_emotion, last_level)
+
+    def get_current_emotion(self):
+        """
+        継続中の表情と継続時間レベルを取得します。
+
+        Returns
+        -------
+        (emotion, level) : tuple
+        emotion : int
+            継続中の表情
+        level : float
+            継続中の表情の継続時間レベル（0.0 ～ 1.0）
+        """
+        level = self.get_level(self.__keep)
+        
+        return (self.__emotion, level)
 
 
 class HappyMirrorLed:
@@ -151,10 +226,9 @@ class HappyMirrorLed:
         self.__strip = PixelStrip(LED_NUM, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
         # NeoPixel ライブラリを初期化します。（最初に一度だけ実行する必要があります。）
         self.__strip.begin()
-        self.__last_emotion = EMOTION_UNKNOWN       # 前回検出した最大の感情
         self.all_led_off()
         self.__last_check_time = 0                  # 最後に表情をチェックした時刻
-        self.__happy_keep_timer = EmotionKeepTimer()
+        self.__emotion_keep_timer = EmotionKeepTimer()
 #        self.__leds = [[0, 0, 0] for _ in range(LED_NUM)]
         self.__leds = self.default_led_color()
 
@@ -222,7 +296,6 @@ class HappyMirrorLed:
         leds = [EMOTION_COLOR[EMOTION_COLOR_DEFAULT] for _ in range(LED_NUM)]
         return leds
 
-
     def __make_led_data(self, index):
         """
         各 LED のデータを作成します。
@@ -271,16 +344,6 @@ class HappyMirrorLed:
         leds.extend(other_side_leds)            # 半分の LED データにもう半分の反転データを連結してライン LED 全体のデータにします。
         return leds
 
-    def __merge_led_color(self, heart_beat : Notifier, face_detect : Notifier, emotion : Emotion, leds : list):
-        """
-        ハートビート、顔検出の情報から、対応する LED データを上書きします。
-        """
-        # TODO: 顔検出用 LED データを上書きします。
-        # TODO: ハートビート用 LED データを上書きします。
-
-#        return leds
-        pass
-
     def depict(self, heart_beat : Notifier, face_detect : Notifier, emotion : Emotion):
         """
         引数で与えられた各インスタンスから情報を取得して LED を光らせます。
@@ -288,10 +351,6 @@ class HappyMirrorLed:
         @param face_detect 顔検出用インスタンス
         @param emotion 感情データ用インスタンス
         """
-#        largest_index, _ = emotion.get_largest_emotion_queue()
-#        leds = self.__make_led_data(largest_index)
-#        print(f"__merge_led_color: leds = {leds}")      # debug
-
         # 頻繁に表情チェックすると値がバタつくので、少し間隔を置いて、定期的にチェックするようにします。
         # その間、emotion インスタンスにて表情データを積算してくれています。
         if self.__is_check_time() == True:              # チェック時間を経過したらチェックします。
@@ -300,32 +359,52 @@ class HappyMirrorLed:
             # 確率が一番高い表情を調べます。
             largest_index, _ = emotion.get_largest_emotion_queue()
 
-            if largest_index == EMOTION_UNKNOWN:            # 顔を全く検出していないときは、
-                self.all_led_off()                          # LED を消灯して、
-                self.__happy_keep_timer.reset()             # 笑顔継続時間をリセットします。
-            else:
-                # 前回顔検出していない→今回検出したときは、「笑って」音声を出力します。
-                if self.__last_emotion == EMOTION_UNKNOWN:
+            self.__emotion_keep_timer.set(largest_index)
+            (last_emotion, keep_level) = self.__emotion_keep_timer.get_last_emotion()
+            (current_emotion, current_level) = self.__emotion_keep_timer.get_current_emotion()
+            print(f"last={last_emotion}, {keep_level:.3f} curr = {current_emotion}, {current_level:.3f}")
+
+            if last_emotion == EMOTION_UNKNOWN:         # 顔を全く検出していないときは、
+                if current_emotion != EMOTION_UNKNOWN and current_level == 0.0: # 顔を検出した直後なら、「笑って」音声を出力します。
+                    print("waratte!")
                     play_voice(SITUATION_FACEDETECT)
 
-                self.__happy_keep_timer.set(largest_index)  # 今の感情から笑顔が続いている時間を設定します。
-                # 笑顔をキープしている時間を、レベル（MAXの時間に対するキープ時間の割合 0.0～1.0）を取得します。
-                keep_level = self.__happy_keep_timer.get_keep_level()
+            if current_emotion == EMOTION_UNKNOWN:      # 現在顔を検出していなければ
+                print("Unknown")
+                self.all_led_off()                      # LED を消灯します。
+            elif current_emotion == EMOTION_HAPPY:      # 現在笑顔の場合
                 # キープレベルから LED データに変換します。
-                self.__leds = self.__make_happy_led_data(keep_level)
-                # キープレベルが1.0（MAX）になったらレインボー表示＋「いい笑顔ですね！」音声出力します。
-                if keep_level >= 1.0:
+                self.__leds = self.__make_happy_led_data(current_level)
+                # キープレベルが1.0（MAX）になったらレインボー表示＋「いい笑顔ですね！」音声出力＋ビーコン発信します。
+                if current_level >= 1.0:
 #                    subprocess.Popen(['aplay', '001_OnlineMeeting.wav'])
+                    print("happy full")
                     play_voice(SITUATION_HAPPY_FULL)
                     theaterChaseRainbow(self.__strip, iterations=ANIMATION_ITERATION)
-                    send_iBeacon(EMOTION_HAPPY, 1)      # iBeacon 送信
-                    self.__happy_keep_timer.reset()     # 笑顔継続時間をリセットします。
-                    emotion.reset_after_full()          # レインボー後は感情データをリセットします。
+                    send_iBeacon(current_emotion, int(current_level * 100))       # iBeacon 送信
+                    self.__emotion_keep_timer.reset()                           # 笑顔継続時間をリセットします。
+                    emotion.reset_after_full()                                  # レインボー後は感情データをリセットします。
                     self.__leds = self.default_led_color()
-            self.__last_emotion = largest_index
+                else:
+                    print("not happy")
+                    pass
+            else:                                       # 笑顔以外の表情だった場合
+                # キープレベルを 0 として LED データに変換します。
+                self.__leds = self.__make_happy_led_data(0.0)
 
-        # leds（LED データのリスト）を渡して、顔検出とハートビート情報を上書きします。
-        self.__merge_led_color(heart_beat, face_detect, emotion, self.__leds)
+            if last_emotion == EMOTION_HAPPY:
+                if keep_level >= 1.0:                   # キープレベルが 1.0 以上の場合
+                    pass    # 上（current_level >= 1.0 の処理）で行っています。
+
+                elif keep_level > 0.5:                  # キープレベルが 0.5 より大きくなったら「惜しい」出力
+                    print("oshii")
+                    play_voice(SITUATION_NOT_ENOUGH)                            # 音声
+                    send_iBeacon(last_emotion, int(0.8 * 100))                  # iBeacon 送信
+                    self.__emotion_keep_timer.reset_last()                      # 表情が途切れる前の表情データをリセットします。
+                    emotion.reset_after_full()                                  # 惜しい後も感情データをリセットします。
+                else:                                   # キープレベルが 0.5 以下の時は何もしません
+                    print("low")
+                    pass
+
 #        print(f"LED: {self.__leds}")                        # debug
         self.__show(self.__leds)
-

@@ -80,5 +80,5 @@ class Emotion:
             largest_rate = 0
             largest_index = EMOTION_UNKNOWN
         else:
-            largest_rate = largest_emotion / sum(emotions)
+            largest_rate = largest_emotion / total
         return (largest_index, largest_rate)
