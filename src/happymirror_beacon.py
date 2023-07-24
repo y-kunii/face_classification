@@ -61,7 +61,7 @@ def send_iBeacon(emotion, level=0):
     # 1 発だけ送信／受信するのは難しい？
     # ビーコンを連続して受信した場合の動作抑制は ifLink のルール側で対応します。
     # こちらは確実にビーコンが受信されるように少し長く送信し続けるようにします。
-    time.sleep(2.0)
+    time.sleep(1.0)
     service.stop_advertising()
 
 
