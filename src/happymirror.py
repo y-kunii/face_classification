@@ -183,6 +183,11 @@ while True:
         draw_text(face_coordinates, rgb_image, emotion_text,
                   color, 0, -45, 1, 1)
 
+        # ウィンドウ全体に太い枠を描画します。
+        THICKNESS = 20
+        height, width = rgb_image.shape[:2]
+        cv2.rectangle(rgb_image, (0 + THICKNESS, 0 + THICKNESS), (width - THICKNESS, height - THICKNESS), color, thickness=20)
+
     if face_num == 0:
         emotion_data.no_faces()                         # 顔が小さい（遠くにいる）ときは、検出なし扱いとします。
 
