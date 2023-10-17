@@ -14,7 +14,7 @@ EMOTION_ACCUM_COUNT     = 6     # 過去何回分の感情データを蓄える�
 ANIMATION_ITERATION     = 30    # 笑顔の持続時間が HAPPY_KEEP_TIME 以上になったときに LED をキラキラさせる回数（これで時間調整してください。）
 EMOTION_RESET_TIME_AFTER_FULL = 5.0 # HAPPY_KEEP_TIME 経過後、次のアクションを開始するまでの間隔（単位：秒）。少し間を開けないと立て続けに動作して鬱陶しい。
 
-LED_NUM             = 37        # LED の数（例：NeoPixel Ring→12、ラインLED(1m）→ 60）
+LED_NUM             = 34        # LED の数（例：NeoPixel Ring→12、ラインLED(1m）→ 60）
 LED_HEARTBEAT       = 0         # ハートビート用LEDの番号（最小値：0、LED_NUM未満にしてください。使わない場合はLED_NUM以上にしてください。）
 LED_FACEDETECT      = 1         # 顔認識通知用LEDの番号（最小値：0、LED_NUM未満にしてください。使わない場合はLED_NUM以上にしてください。）
 
