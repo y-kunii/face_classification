@@ -17,8 +17,8 @@ VOICE_DIR = '../voice/'
 # 音声データ（ファイル名）のリスト
 # [][0] = 顔検出時、[][1] = 笑顔が規定時間持続した時
 voice_list = (
-    ('004_waratte.wav',                 '002_online_ganbatte.wav'),             # 0
-    ('005_egaomisete.wav',              '003_itterassyai.wav'),                 # 1
+    ('004_waratte.wav',         '002_online_ganbatte.wav',  '006_oshii.wav'),           # 0
+    ('005_egaomisete.wav',      '003_itterassyai.wav',      '006_oshii.wav'),           # 1
 )
 
 
@@ -31,7 +31,7 @@ def play_voice(situation):
     situation: 状況（0 = 顔検出時 or 1 = 笑顔が規定時間持続した時）
     """
     global voice_no
-    if situation > SITUATION_HAPPY_FULL:    # 引数が範囲外の時は音を出さずに終了します。
+    if situation > SITUATION_NOT_ENOUGH:    # 引数が範囲外の時は音を出さずに終了します。
         return
 
     if situation == SITUATION_FACEDETECT:   # 笑顔を促すときにランダムでデータ番号を決めます。

@@ -34,10 +34,6 @@ detection_model_path = '../trained_models/detection_models/haarcascade_frontalfa
 emotion_model_path = '../trained_models/emotion_models/fer2013_mini_XCEPTION.102-0.66.hdf5'
 emotion_labels = get_labels('fer2013')
 
-# 複数回の感情検出結果を元に LED の光らせ方を決める。
-ANALYZE_COUNT = 3                   # 感情確率の和を保存する回数
-sum_count = 0                       # 感情和リストに加えた回数
-
 # hyper-parameters for bounding boxes shape
 frame_window = 10
 emotion_offsets = (20, 40)
@@ -85,7 +81,7 @@ while True:
         # 3 番目の要素 face_coordinates[2] を大きさの判定材料にします。
         # [239 230 132 132]
         # [222 326  53  53]
-        print(face_coordinates)
+#        print(face_coordinates)
         if face_coordinates[2] < 100:
             continue
 
@@ -165,7 +161,6 @@ while True:
         # 感情値（各感情の確率）を蓄積します。
         # EmotionFlower の add_emotion_rate() と同じような役割をします。
         emotion_data.accumurate(emotion_prediction[0])
-        sum_count += 1
 
         #     # ADD kuni
         #     url = "https://script.google.com/macros/s/AKfycbwplNBc3ILI7VaPeYWTKmOZuW8pihMEgEvIGIMsQuVwXLs-5a93qzy8YfWvlXd1U3E_yw/exec"
@@ -188,16 +183,17 @@ while True:
         draw_text(face_coordinates, rgb_image, emotion_text,
                   color, 0, -45, 1, 1)
 
+        # ウィンドウ全体に太い枠を描画します。
+        THICKNESS = 20
+        height, width = rgb_image.shape[:2]
+        cv2.rectangle(rgb_image, (0 + THICKNESS, 0 + THICKNESS), (width - THICKNESS, height - THICKNESS), color, thickness=20)
+
     if face_num == 0:
         emotion_data.no_faces()                         # 顔が小さい（遠くにいる）ときは、検出なし扱いとします。
 
     # LED を制御します。
     # for ブロックの中は顔を検出されないと実行されないので、for の外で行います。
     happy_led.depict(heartbeat_notifier, face_detect_notifier, emotion_data)
-    # TODO: EmotionFlowerに合わせて一定回数ごとに値をリセットしていますが、合計値を使わなければ不要になります。
-    if sum_count >= ANALYZE_COUNT:
-        emotion_data.reset_sum()
-        sum_count = 0
 
     bgr_image = cv2.cvtColor(rgb_image, cv2.COLOR_RGB2BGR)
     cv2.imshow('window_frame', bgr_image)
