@@ -35,9 +35,11 @@ import yunet_facedetect
 # parameters for loading data and images
 # detection_model_path = '../trained_models/detection_models/haarcascade_frontalface_default.xml'
 detection_model_path = 'face_detection_yunet_2023mar_int8.onnx'
-emotion_model_path = '../trained_models/emotion_models/fer2013_mini_XCEPTION.102-0.66.hdf5'
-emotion_labels = get_labels('fer2013')
-#emotion_labels = get_labels('happymirror')
+#emotion_model_path = '../trained_models/emotion_models/fer2013_mini_XCEPTION.102-0.66.hdf5'
+# Happy とその他の 2 値分類モデル
+emotion_model_path = '../trained_models/emotion_models/happymirror_mini_XCEPTION.65-0.95.hdf5'
+#emotion_labels = get_labels('fer2013')
+emotion_labels = get_labels('happymirror')  # Happy とその他の 2 値分類
 
 # hyper-parameters for bounding boxes shape
 frame_window = 10
@@ -73,6 +75,7 @@ face_detection.setInputSize([w, h])
 heartbeat_notifier.init()                               # ハートビート初期化
 face_detect_notifier.init()                             # 顔検出通知を初期化
 happy_led.all_led_off()                                 # 念のため LED をすべて消灯します。
+
 
 while True:
     # bgr_image = video_capture.read()[1]
@@ -178,9 +181,15 @@ while True:
 #        print("time span: ", (time_now - time_before))   # 前回からの経過時間
         time_before = time_now
 
+        # 2 値分類を従来の 7 分類に置き換えます。
+        # emotion_prediction[0][0] = その他（neutral）  = 6 番目
+        # emotion_prediction[0][1] = Happy              = 3 番目
+        emotion_prediction7 = [0, 0, 0, emotion_prediction[0][1], 0, 0, emotion_prediction[0][0]]
+
         # 感情値（各感情の確率）を蓄積します。
         # EmotionFlower の add_emotion_rate() と同じような役割をします。
-        emotion_data.accumurate(emotion_prediction[0])
+#        emotion_data.accumurate(emotion_prediction[0])
+        emotion_data.accumurate(emotion_prediction7)
 
         #     # ADD kuni
         #     url = "https://script.google.com/macros/s/AKfycbwplNBc3ILI7VaPeYWTKmOZuW8pihMEgEvIGIMsQuVwXLs-5a93qzy8YfWvlXd1U3E_yw/exec"
