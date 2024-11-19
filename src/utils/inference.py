@@ -15,18 +15,18 @@ def detect_faces(detection_model, gray_image_array):
     return detection_model.detectMultiScale(gray_image_array, 1.3, 5)
 
 def draw_bounding_box(face_coordinates, image_array, color):
-    x, y, w, h = face_coordinates
-    cv2.rectangle(image_array, (x, y), (x + w, y + h), color, 2)
+    x, y, w, h = face_coordinates[:4]
+    cv2.rectangle(image_array, (int(x), int(y)), (int(x + w), int(y + h)), color, 2)
 
 def apply_offsets(face_coordinates, offsets):
-    x, y, width, height = face_coordinates
+    x, y, width, height = face_coordinates[:4]
     x_off, y_off = offsets
-    return (x - x_off, x + width + x_off, y - y_off, y + height + y_off)
+    return (int(x - x_off), int(x + width + x_off), int(y - y_off), int(y + height + y_off))
 
 def draw_text(coordinates, image_array, text, color, x_offset=0, y_offset=0,
                                                 font_scale=2, thickness=2):
     x, y = coordinates[:2]
-    cv2.putText(image_array, text, (x + x_offset, y + y_offset),
+    cv2.putText(image_array, text, (int(x + x_offset), int(y + y_offset)),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 font_scale, color, thickness, cv2.LINE_AA)
 

@@ -29,17 +29,25 @@ from emotion import Emotion             # 感情データ処理用
 from happymirror_const import *
 from happymirror_neopixel import HappyMirrorLed # LED 制御用
 
+#import yunet.yunet_facedetect
+import yunet_facedetect
+
 # parameters for loading data and images
-detection_model_path = '../trained_models/detection_models/haarcascade_frontalface_default.xml'
+# detection_model_path = '../trained_models/detection_models/haarcascade_frontalface_default.xml'
+detection_model_path = 'face_detection_yunet_2023mar_int8.onnx'
 emotion_model_path = '../trained_models/emotion_models/fer2013_mini_XCEPTION.102-0.66.hdf5'
 emotion_labels = get_labels('fer2013')
+#emotion_labels = get_labels('happymirror')
 
 # hyper-parameters for bounding boxes shape
 frame_window = 10
 emotion_offsets = (20, 40)
 
 # loading models
-face_detection = load_detection_model(detection_model_path)
+# 顔検出用モデル YuNet の準備
+print('Preparing face-detection model...')
+# face_detection = load_detection_model(detection_model_path)
+face_detection = yunet_facedetect.load_detection_model(detection_model_path)
 emotion_classifier = load_model(emotion_model_path, compile=False)
 
 # getting input model shapes for inference
@@ -58,19 +66,31 @@ happy_led = HappyMirrorLed()                            # HappyMirror 用 NeoPix
 # starting video streaming
 cv2.namedWindow('window_frame')
 video_capture = cv2.VideoCapture(0)
+w = int(video_capture.get(cv2.CAP_PROP_FRAME_WIDTH))
+h = int(video_capture.get(cv2.CAP_PROP_FRAME_HEIGHT))
+face_detection.setInputSize([w, h])
+
 heartbeat_notifier.init()                               # ハートビート初期化
 face_detect_notifier.init()                             # 顔検出通知を初期化
 happy_led.all_led_off()                                 # 念のため LED をすべて消灯します。
 
 while True:
-    bgr_image = video_capture.read()[1]
+    # bgr_image = video_capture.read()[1]
+    hasFrame, bgr_image = video_capture.read()
     gray_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2GRAY)
     rgb_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2RGB)
+    if not hasFrame:
+        print('No frames grabbed!')
+        break
     heartbeat_notifier.notice()                         # カメラ画像の読み取りができればハートビートを打つ
 
-    faces = detect_faces(face_detection, gray_image)
-    if len(faces) == 0:
+    # Inference
+    # faces = detect_faces(face_detection, gray_image)
+    faces = face_detection.infer(bgr_image)
+
+    if faces is None or len(faces) == 0:
         emotion_data.no_faces()                         # 顔を検出していない情報を emotion_data に知らせる。
+    print(f'{len(faces)} faces found.')
 
     face_num = 0
     for face_coordinates in faces:
