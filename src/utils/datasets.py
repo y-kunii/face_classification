@@ -23,6 +23,8 @@ class DataManager(object):
             self.dataset_path = '../datasets/fer2013/fer2013.csv'
         elif self.dataset_name == 'KDEF':
             self.dataset_path = '../datasets/KDEF/'
+        elif self.dataset_name == 'happymirror':
+            self.dataset_path = '../datasets/happymirror/happymirror.csv'
         else:
             raise Exception(
                     'Incorrect dataset name, please input imdb or fer2013')
@@ -34,6 +36,8 @@ class DataManager(object):
             ground_truth_data = self._load_fer2013()
         elif self.dataset_name == 'KDEF':
             ground_truth_data = self._load_KDEF()
+        elif self.dataset_name == 'happymirror':
+            ground_truth_data = self._load_happymirror()
         return ground_truth_data
 
     def _load_imdb(self):
@@ -68,7 +72,24 @@ class DataManager(object):
             faces.append(face.astype('float32'))
         faces = np.asarray(faces)
         faces = np.expand_dims(faces, -1)
-        emotions = pd.get_dummies(data['emotion']).as_matrix()
+#        emotions = pd.get_dummies(data['emotion']).as_matrix()
+        emotions = pd.get_dummies(data['emotion']).values
+        return faces, emotions
+
+    def _load_happymirror(self):
+        data = pd.read_csv(self.dataset_path)
+        pixels = data['pixels'].tolist()
+        width, height = 48, 48
+        faces = []
+        for pixel_sequence in pixels:
+            face = [int(pixel) for pixel in pixel_sequence.split(' ')]
+            face = np.asarray(face).reshape(width, height)
+            face = cv2.resize(face.astype('uint8'), self.image_size)
+            faces.append(face.astype('float32'))
+        faces = np.asarray(faces)
+        faces = np.expand_dims(faces, -1)
+#        emotions = pd.get_dummies(data['emotion']).as_matrix()
+        emotions = pd.get_dummies(data['emotion']).values
         return faces, emotions
 
     def _load_KDEF(self):
@@ -110,6 +131,8 @@ def get_labels(dataset_name):
         return {0: 'woman', 1: 'man'}
     elif dataset_name == 'KDEF':
         return {0: 'AN', 1: 'DI', 2: 'AF', 3: 'HA', 4: 'SA', 5: 'SU', 6: 'NE'}
+    elif dataset_name == 'happymirror':
+        return {0: 'neutral', 1: 'happy'}
     else:
         raise Exception('Invalid dataset name')
 
@@ -122,6 +145,8 @@ def get_class_to_arg(dataset_name='fer2013'):
         return {'woman': 0, 'man': 1}
     elif dataset_name == 'KDEF':
         return {'AN': 0, 'DI': 1, 'AF': 2, 'HA': 3, 'SA': 4, 'SU': 5, 'NE': 6}
+    elif dataset_name == 'happymirror':
+        return {'neutral': 0, 'happy': 1}
     else:
         raise Exception('Invalid dataset name')
 
